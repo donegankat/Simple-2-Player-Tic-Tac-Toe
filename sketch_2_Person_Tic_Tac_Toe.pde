@@ -82,17 +82,17 @@ void mouseClicked()
   // If the click was valid, calculate which square was clicked.
   if (mouseX >= windowPadding && mouseX <= windowWidth/3) // Click was in the left column
   {
-    row = 0;
+    column = 0;
     startX = windowPadding;
   }
   else if (mouseX > windowWidth/3 && mouseX <= windowWidth - windowWidth/3) // Click was in the middle column
   {
-    row = 1;
+    column = 1;
     startX = windowWidth/3 + windowPadding/2;
   }
   else if (mouseX > windowWidth - windowWidth/3 && mouseX < windowWidth - windowPadding) // Click was in the right column
   {
-    row = 2;
+    column = 2;
     startX = windowWidth - windowWidth/3 + windowPadding/2;
   }
   else // The click was off the board somewhere
@@ -105,17 +105,17 @@ void mouseClicked()
   
   if (mouseY >= windowPadding && mouseY <= windowHeight/3) // Click was in the top row
   {
-    column = 0;
+    row = 0;
     startY = windowPadding;
   }
   else if (mouseY > windowHeight/3 && mouseY <= windowHeight - windowHeight/3) // Click was in the middle row
   {
-    column = 1;
+    row = 1;
     startY = windowHeight/3 + windowPadding/2;
   }
   else if (mouseY > windowHeight - windowHeight/3 && mouseY < windowHeight - windowPadding) // Click was in the bottom row
   {
-    column = 2;
+    row = 2;
     startY = windowHeight - windowHeight/3 + windowPadding/2;
   }
   else // The click was off the board somewhere
@@ -137,7 +137,6 @@ void mouseClicked()
       boolean playerWon = checkPlayerWon(); // Check to see if the player won the game
       if (playerWon) // Winner
       {
-        fill(255, 0, 0);
         printMessage("PLAYER " + currentPlayer + " WON", true); // Print on the screen for the player to see
         println("PLAYER", currentPlayer, "WON"); // Print to the console window
       }
@@ -162,7 +161,6 @@ void mouseClicked()
   else // The click wasn't in a square so let the player know they had a bad click & need to try again
   {
     printMessage("INVALID CLICK", false); // Print on the screen for the player to see
-    println("INVALID CLICK"); // Print to the console window
   }
 }
 
