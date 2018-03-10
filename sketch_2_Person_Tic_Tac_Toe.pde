@@ -21,9 +21,9 @@ int[] boardSquares;
 /// Setup
 /// *********
 
-void setup()
+void setup() // Pretty sure all Processing projects need this void setup()
 {
-  size(880,920);
+  size(880,920); // This is the actual window size: (x:880, y:920), so it's quite a bit bigger than what we've accounted for with in windowWidth and int windowHeight.
   noStroke();
   background(0);
   
