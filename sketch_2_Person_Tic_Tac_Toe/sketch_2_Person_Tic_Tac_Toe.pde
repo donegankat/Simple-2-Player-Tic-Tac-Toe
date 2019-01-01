@@ -72,95 +72,87 @@ void mouseClicked()
 {
   boolean validClick = true;
   
-  int squareIndex = 0;
   int row = 0;
   int column = 0;
-  int startX = 0;
-  int startY = 0;
   
   // Make sure the click was in a valid area. If the user clicked outside of the game board, don't do anything.
   // If the click was valid, calculate which square was clicked.
   if (mouseX >= windowPadding && mouseX <= windowWidth/3) // Click was in the left column
   {
     column = 0;
-    startX = windowPadding;
   }
   else if (mouseX > windowWidth/3 && mouseX <= windowWidth - windowWidth/3) // Click was in the middle column
   {
     column = 1;
-    startX = windowWidth/3 + windowPadding/2;
   }
   else if (mouseX > windowWidth - windowWidth/3 && mouseX < windowWidth - windowPadding) // Click was in the right column
   {
     column = 2;
-    startX = windowWidth - windowWidth/3 + windowPadding/2;
   }
   else // The click was off the board somewhere
   {
     validClick = false;
   }
-  
-  startX += squarePadding; // Pad each square a little bit
   
   
   if (mouseY >= windowPadding && mouseY <= windowHeight/3) // Click was in the top row
   {
     row = 0;
-    startY = windowPadding;
   }
   else if (mouseY > windowHeight/3 && mouseY <= windowHeight - windowHeight/3) // Click was in the middle row
   {
     row = 1;
-    startY = windowHeight/3 + windowPadding/2;
   }
   else if (mouseY > windowHeight - windowHeight/3 && mouseY < windowHeight - windowPadding) // Click was in the bottom row
   {
     row = 2;
-    startY = windowHeight - windowHeight/3 + windowPadding/2;
   }
   else // The click was off the board somewhere
   {
     validClick = false;
   }
-  
-  startY += squarePadding; // Pad each square a little bit
-  
+    
   if (validClick) // The click was in a valid area
   {
     int currentSquareIndex = getSquareIndex(row, column); // Figure out which square was clicked on
-    int currentSquareStatus = getSquareStatus(currentSquareIndex); // Check to see if the square that was clicked was already occupied
     
-    if (currentSquareStatus == 0) // If the square is empty then we can fill it in.
-    {
-      setSquareStatus(currentSquareIndex, currentPlayer); // Mark that this square is now filled by the current player
-      
-      boolean playerWon = checkPlayerWon(); // Check to see if the player won the game
-      if (playerWon) // Winner
-      {
-        printMessage("PLAYER " + currentPlayer + " WON", true); // Print on the screen for the player to see
-        println("PLAYER", currentPlayer, "WON"); // Print to the console window
-      }
-      else
-      {
-        eraseMessage(); // Clear any previous text from below the board
-      }
-      
-      if (currentPlayer == 1) // Player 1 is playing, so draw an X
-      {
-        drawX(startX, startY);
-        currentPlayer = 2; // Switch from X to O next time
-      }
-      else // Player 2 is playing, so draw an O
-      {
-        drawO(startX, startY);
-        currentPlayer = 1; // switch from O to X next time
-      }
-
-    }
+    takeTurn(currentSquareIndex); //<>//
   }
   else // The click wasn't in a square so let the player know they had a bad click & need to try again
   {
     printMessage("INVALID CLICK", false); // Print on the screen for the player to see
+  }
+}
+
+void takeTurn(int currentSquareIndex)
+{
+  int currentSquareStatus = getSquareStatus(currentSquareIndex); // Check to see if the square that was clicked was already occupied //<>//
+  
+  if (currentSquareStatus == 0) // If the square is empty then we can fill it in.
+  {
+    setSquareStatus(currentSquareIndex, currentPlayer); // Mark that this square is now filled by the current player
+        
+    boolean playerWon = checkPlayerWon(); // Check to see if the player won the game
+    if (playerWon) // Winner
+    {
+      printMessage("PLAYER " + currentPlayer + " WON", true); // Print on the screen for the player to see
+      println("PLAYER", currentPlayer, "WON"); // Print to the console window
+    }
+    else
+    {
+      eraseMessage(); // Clear any previous text from below the board
+    }
+    
+    if (currentPlayer == 1) // Player 1 is playing, so draw an X
+    {
+      drawX(currentSquareIndex);
+      currentPlayer = 2; // Switch from X to O next time
+    }
+    else // Player 2 is playing, so draw an O
+    {
+      drawO(currentSquareIndex);
+      currentPlayer = 1; // switch from O to X next time
+    }
   }
 }
 
@@ -251,22 +243,88 @@ boolean checkPlayerWon()
 
 
 // Draw an X in the given square
-void drawX(int startX, int startY)
+void drawX(int squareIndex)
 {
+  int row = (int)squareIndex / 3;
+  int column = squareIndex % 3;
+  
+  drawX(row, column); //<>//
+}
+
+// Draw an X in the given square
+void drawX(int row, int column)
+{
+  int startDrawX = getStartDrawX(column);
+  int startDrawY = getStartDrawY(row);
+  
   stroke(0, 100, 255); // Set the stroke to blue for X's
   
-  line(startX, startY, startX + shapeWidth, startY + shapeHeight);
-  line(startX, startY + shapeHeight, startX + shapeWidth, startY);
+  line(startDrawX, startDrawY, startDrawX + shapeWidth, startDrawY + shapeHeight);
+  line(startDrawX, startDrawY + shapeHeight, startDrawX + shapeWidth, startDrawY);
 }
 
 // Draw an O in the given square
-void drawO(int startX, int startY)
+void drawO(int squareIndex)
 {
+  int row = (int)squareIndex / 3;
+  int column = squareIndex % 3;
+  
+  drawO(row, column); //<>//
+}
+
+// Draw an O in the given square
+void drawO(int row, int column)
+{
+  int startDrawX = getStartDrawX(column); //<>//
+  int startDrawY = getStartDrawY(row);
+  
   stroke(0, 255, 50); // Set the stroke to green for O's
   
   ellipseMode(CORNER);
   fill(0);
-  ellipse(startX, startY, shapeWidth, shapeHeight);
+  ellipse(startDrawX, startDrawY, shapeWidth, shapeHeight);
+}
+
+// Gets the X coordinate at which to start drawing the shape.
+int getStartDrawX(int currentColumn)
+{
+  int drawX = 0; //<>//
+  
+  switch (currentColumn)
+  {
+    case 0:
+      drawX = windowPadding;
+      break;
+    case 1: 
+      drawX = windowWidth/3 + windowPadding/2;
+      break;
+    case 2: 
+      drawX = windowWidth - windowWidth/3 + windowPadding/2;
+      break;
+  }
+  
+  return drawX + squarePadding; // Pad each square a little bit
+}
+
+// Gets the Y coordinate at which to start drawing the shape. //<>//
+int getStartDrawY(int currentRow)
+{
+  int drawY = 0;
+  
+  switch (currentRow)
+  {
+    case 0:
+      drawY = windowPadding;
+      break;
+    case 1: 
+      drawY = windowHeight/3 + windowPadding/2;
+      break;
+    case 2: 
+      drawY = windowHeight - windowHeight/3 + windowPadding/2;
+      break;
+  }
+  
+  return drawY + squarePadding; // Pad each square a little bit
 }
 
 // Prints a message on the screen below the board.
